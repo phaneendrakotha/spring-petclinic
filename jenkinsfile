@@ -1,0 +1,30 @@
+pipeline {
+     environment {
+
+    registry = 'reg-dhc.app.corpintra.net'
+    registryUrl = "https://${registry}"
+    registryProject = "${registry}/dag/dottest"
+    registryCredential = '9aa9ba8f-d776-4c9b-96ce-608e0aef8f7b'
+    sonarCredential = 'sonar-phkotha'
+    shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
+
+  }
+  	
+	
+agent any
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn -DskipTests clean install'
+            }
+        }
+         
+ 
+
+      
+
+		
+     
+ 
+	}   
+}
