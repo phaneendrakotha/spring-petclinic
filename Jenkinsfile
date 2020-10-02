@@ -1,25 +1,26 @@
 pipeline {
-     environment {
-
-    sonarCredential = 'sonar-phkotha'
-    shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
-
-  }
-  		
-agent any
+    agent {
+        docker {
+            image 'maven:3-alpine'
+            args '-v /root/.m2:/root/.m2'
+        }
+    }
     stages {
         stage('Build') {
             steps {
-                sh 'mvn -DskipTests clean install'
+                sh 'mvn -B -DskipTests clean package'
             }
         }
-         
- 
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
 
-      
-
-		
-     
- 
-	}   
+    }
 }
